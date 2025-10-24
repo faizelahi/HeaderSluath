@@ -1,84 +1,90 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HeaderSleuth — God Mode</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeaderSleuth++</title>
+<style>
+  body { font-family: monospace; background: #1e1e1e; color: #eee; margin: 0; padding: 1rem; }
+  input, textarea, button { font-family: monospace; font-size: 1rem; margin: 0.2rem 0; width: 100%; }
+  button { cursor: pointer; padding: 0.5rem; }
+  .analysis-table, .diff-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+  .analysis-table th, .analysis-table td, .diff-table th, .diff-table td { border: 1px solid #555; padding: 0.2rem 0.5rem; text-align: left; }
+  .diff { background: #4d0000; }
+  .same { background: #003300; }
+  .finding { border: 1px solid #444; margin: 0.3rem 0; padding: 0.3rem; border-radius: 4px; }
+  .finding.high { border-color: #f33; }
+  .finding.medium { border-color: #f90; }
+  .finding.low { border-color: #3cf; }
+  .btn-poc, .btn-copy { margin-right: 0.2rem; }
+  .score-pill { display: inline-block; padding: 0.3rem 0.5rem; border-radius: 4px; margin: 0.5rem 0; }
+  .score-pill.green { background: #0a0; color: #fff; }
+  .score-pill.orange { background: #f80; color: #000; }
+  .score-pill.red { background: #f00; color: #fff; }
+  textarea { min-height: 120px; background: #222; color: #eee; border: 1px solid #555; padding: 0.5rem; }
+  .panel { border: 1px solid #555; padding: 0.5rem; margin: 0.5rem 0; border-radius: 4px; background: #2a2a2a; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <header class="top">
-      <div>
-        <h1>HeaderSleuth <span class="tag">— God Mode</span></h1>
-        <p class="desc">Deep header analysis, CORS fuzz generation, CSP & cookie scanner, HTTP↔HTTPS diff, and PoC/report templates — all client-side.</p>
-      </div>
-      <div class="actions">
-        <button id="exportReport">Download Report (MD)</button>
-        <button id="exportCSV">Export Findings (CSV)</button>
-      </div>
-    </header>
 
-    <main class="grid">
-      <section class="panel">
-        <h2>Curl & CORS Generator</h2>
-        <label>Target: <input id="target" placeholder="example.com or https://example.com" /></label>
-        <label>Origins (comma-separated): <input id="origins" placeholder="https://evil.example, https://null" /></label>
-        <div class="row">
-          <label><input type="checkbox" id="cred"> Include credentials (Access-Control-Allow-Credentials)</label>
-          <label><input type="checkbox" id="preflight"> Include preflight (OPTIONS) tests</label>
-        </div>
-        <div class="row">
-          <button id="genAll">Generate All Tests</button>
-          <button id="copyCurl">Copy Commands</button>
-        </div>
-        <pre id="curlOutput" class="output"></pre>
-        <p class="note">Run commands locally in a lab. These tests help pinpoint insecure CORS and cookie behavior.</p>
-      </section>
+<h1>HeaderSleuth++</h1>
 
-      <section class="panel large">
-        <h2>Paste Response Headers (A)</h2>
-        <textarea id="pasteA" placeholder="Paste raw headers from curl -I or devtools for HTTP (or any response)"></textarea>
-        <div class="row">
-          <button id="analyzeA">Analyze A</button>
-          <button id="saveA">Save Snapshot A</button>
-        </div>
+<div class="panel">
+  <h2>Target & CORS PoC</h2>
+  <input id="target" placeholder="Enter target URL (https://example.com)" />
+  <input id="origins" placeholder="CORS test origins, comma separated" />
+  <label><input type="checkbox" id="cred" /> Test credentials</label>
+  <label><input type="checkbox" id="preflight" /> Test preflight OPTIONS</label>
+  <button id="genCurl">Generate PoC</button>
+  <button id="copyCurl">Copy to Clipboard</button>
+  <button id="downloadCurl">Download Script</button>
+  <pre id="curlOutput"></pre>
+</div>
 
-        <h2 style="margin-top:18px">Paste Response Headers (B)</h2>
-        <textarea id="pasteB" placeholder="Paste raw headers for HTTPS (or another response to compare)"></textarea>
-        <div class="row">
-          <button id="analyzeB">Analyze B</button>
-          <button id="saveB">Save Snapshot B</button>
-        </div>
+<div class="panel">
+  <h2>Paste Headers for Analysis (A)</h2>
+  <textarea id="pasteA" placeholder="Paste raw headers here (A)"></textarea>
+  <button id="analyzeA">Analyze A</button>
+</div>
 
-        <div class="row" style="margin-top:12px;">
-          <button id="diffAB">Diff A ↔ B</button>
-          <button id="compareCookies">Compare Cookies</button>
-          <select id="severityFilter"><option value="all">All severities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-        </div>
+<div class="panel">
+  <h2>Paste Headers for Analysis (B)</h2>
+  <textarea id="pasteB" placeholder="Paste raw headers here (B)"></textarea>
+  <button id="analyzeB">Analyze B</button>
+</div>
 
-      </section>
+<div class="panel">
+  <h2>Pattern Search</h2>
+  <input id="patternSearch" placeholder="Enter comma-separated regex patterns" />
+</div>
 
-      <aside class="panel right">
-        <h2>Findings & PoC</h2>
-        <div id="findings" class="findings">No analysis yet. Paste headers and click Analyze.</div>
+<div class="panel" id="analysis">
+  <h2>Parsed Headers</h2>
+</div>
 
-        <h3>PoC / Report Template</h3>
-        <div id="poc" class="poc">Generate a PoC by running tests or clicking a finding.</div>
+<div class="panel" id="findings">
+  <h2>Security Findings</h2>
+</div>
 
-        <h3>Snapshots</h3>
-        <div class="snapshots">
-          <button id="listSnapshots">List Saved</button>
-          <div id="snapshotList"></div>
-        </div>
-      </aside>
-    </main>
+<div class="panel" id="poc">
+  <h2>Generated PoC / Markdown</h2>
+  <textarea readonly style="height:200px;"></textarea>
+</div>
 
-    <footer>
-      <small>HeaderSleuth • All actions are client-side. Do not run generated commands against targets without permission.</small>
-    </footer>
-  </div>
+<div class="panel" id="diffAB">
+  <h2>Diff A vs B</h2>
+</div>
 
-  <script src="script.js"></script>
+<div class="panel" id="listSnaps">
+  <h2>Saved Snapshots</h2>
+  <div id="snapList"></div>
+</div>
+
+<script src="script.js"></script>
+<script>
+  // Initialize HeaderSleuth++ bindings
+  if (window.HS && HS.bind && typeof HS.bind.start === 'function') HS.bind.start();
+</script>
+
 </body>
 </html>

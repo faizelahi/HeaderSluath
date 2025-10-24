@@ -1,20 +1,119 @@
-:root{--bg:#f6f8fa;--panel:#fff;--muted:#6b7280;--ok:#0b8457;--bad:#b91c1c;--warn:#b45309}
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; background:var(--bg); margin:0; padding:24px}
-.wrap{max-width:960px;margin:0 auto}
-header h1{margin:0;font-size:28px}
-.tagline{color:var(--muted);margin-top:6px}
-.panel{background:var(--panel);padding:18px;border-radius:8px;margin-top:16px;box-shadow:0 1px 2px rgba(16,24,40,0.04)}
-.row{margin-top:10px}
-input[type="text"],input,textarea{width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;font-family:inherit}
-textarea{min-height:140px}
-button{padding:8px 12px;border-radius:6px;border:1px solid #d1d5db;background:#111827;color:#fff;margin-right:8px;cursor:pointer}
-button:active{transform:translateY(1px)}
-.output{background:#0f172a;color:#cbd5e1;padding:12px;border-radius:6px;white-space:pre-wrap}
-.analysis{padding:10px}
-.ok{color:var(--ok)}
-.bad{color:var(--bad)}
-.warn{color:var(--warn)}
-.info{color:#0f172a}
-.note{font-size:12px;color:var(--muted);margin-top:8px}
-footer{margin-top:18px;color:var(--muted);font-size:13px}
-pre{overflow:auto}
+/* === General === */
+body {
+    font-family: 'Fira Code', monospace;
+    background-color: #1e1e1e;
+    color: #eee;
+    margin: 0;
+    padding: 1rem;
+}
+
+h1, h2 {
+    margin: 0.5rem 0;
+}
+
+input, textarea, button {
+    font-family: monospace;
+    font-size: 1rem;
+    margin: 0.2rem 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: #333;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+/* === Panels === */
+.panel {
+    border: 1px solid #555;
+    padding: 0.7rem;
+    margin: 0.7rem 0;
+    border-radius: 6px;
+    background-color: #2a2a2a;
+}
+
+/* === Textareas === */
+textarea {
+    min-height: 120px;
+    background: #222;
+    color: #eee;
+    border: 1px solid #555;
+    padding: 0.5rem;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+/* === Tables === */
+.analysis-table, .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0;
+}
+
+.analysis-table th, .analysis-table td,
+.diff-table th, .diff-table td {
+    border: 1px solid #555;
+    padding: 0.2rem 0.5rem;
+    text-align: left;
+    word-break: break-all;
+}
+
+.diff { background-color: #4d0000; color: #fff; }
+.same { background-color: #003300; color: #fff; }
+
+/* === Findings === */
+.finding {
+    border: 1px solid #444;
+    margin: 0.3rem 0;
+    padding: 0.3rem;
+    border-radius: 4px;
+}
+
+.finding.high { border-color: #f33; background-color: #330000; }
+.finding.medium { border-color: #f90; background-color: #332200; }
+.finding.low { border-color: #3cf; background-color: #003333; }
+
+/* === Buttons small === */
+.btn-poc, .btn-copy {
+    display: inline-block;
+    margin-right: 0.2rem;
+}
+
+/* === Score Pills === */
+.score-pill {
+    display: inline-block;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    margin: 0.5rem 0;
+}
+
+.score-pill.green { background: #0a0; color: #fff; }
+.score-pill.orange { background: #f80; color: #000; }
+.score-pill.red { background: #f00; color: #fff; }
+
+/* === Responsive adjustments === */
+@media (max-width: 768px) {
+    input, textarea, button {
+        font-size: 0.9rem;
+    }
+    .panel { padding: 0.5rem; }
+}
+
+/* === Preformatted === */
+pre {
+    background: #222;
+    color: #eee;
+    padding: 0.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+}
