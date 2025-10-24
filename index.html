@@ -1,81 +1,84 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HeaderSleuth — God Mode</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>HeaderSleuth++ — Phase 1</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="container">
+  <div class="app">
     <header class="top">
-      <div>
-        <h1>HeaderSleuth <span class="tag">— God Mode</span></h1>
-        <p class="desc">Deep header analysis, CORS fuzz generation, CSP & cookie scanner, HTTP↔HTTPS diff, and PoC/report templates — all client-side.</p>
-      </div>
-      <div class="actions">
-        <button id="exportReport">Download Report (MD)</button>
-        <button id="exportCSV">Export Findings (CSV)</button>
-      </div>
+      <h1>HeaderSleuth++ <span class="mini">Phase 1 (MVP)</span></h1>
+      <p class="lead">Client-side header analysis, CORS fuzz & curl generator, diff, PoC export, snapshots. Safe-by-design — does not fetch remote hosts.</p>
     </header>
 
     <main class="grid">
-      <section class="panel">
-        <h2>Curl & CORS Generator</h2>
-        <label>Target: <input id="target" placeholder="example.com or https://example.com" /></label>
-        <label>Origins (comma-separated): <input id="origins" placeholder="https://evil.example, https://null" /></label>
+      <section class="panel left">
+        <h2>1) Curl & CORS Generator</h2>
+        <label>Target (domain or URL)<input id="target" placeholder="example.com or https://example.com"/></label>
+        <label>Origins (comma separated)<input id="origins" placeholder="https://evil.example.com, https://null"/></label>
         <div class="row">
-          <label><input type="checkbox" id="cred"> Include credentials (Access-Control-Allow-Credentials)</label>
-          <label><input type="checkbox" id="preflight"> Include preflight (OPTIONS) tests</label>
+          <label><input type="checkbox" id="cred"/> Include credentials (Cookie)</label>
+          <label><input type="checkbox" id="preflight"/> Include preflight (OPTIONS)</label>
         </div>
         <div class="row">
-          <button id="genAll">Generate All Tests</button>
-          <button id="copyCurl">Copy Commands</button>
+          <button id="genCurl">Generate</button>
+          <button id="copyCurl">Copy</button>
+          <button id="downloadCurl">Download</button>
         </div>
         <pre id="curlOutput" class="output"></pre>
-        <p class="note">Run commands locally in a lab. These tests help pinpoint insecure CORS and cookie behavior.</p>
+        <p class="note">Commands run locally — run in your lab. This page will not execute them.</p>
       </section>
 
-      <section class="panel large">
-        <h2>Paste Response Headers (A)</h2>
-        <textarea id="pasteA" placeholder="Paste raw headers from curl -I or devtools for HTTP (or any response)"></textarea>
-        <div class="row">
-          <button id="analyzeA">Analyze A</button>
-          <button id="saveA">Save Snapshot A</button>
+      <section class="panel center">
+        <h2>2) Paste Response Headers</h2>
+        <div class="two-col">
+          <div>
+            <h3>A (e.g., HTTP)</h3>
+            <textarea id="pasteA" placeholder="Paste raw headers for A (curl -I... or devtools)"></textarea>
+            <div class="row small">
+              <button id="analyzeA">Analyze A</button>
+              <button id="saveA">Save Snapshot A</button>
+            </div>
+          </div>
+          <div>
+            <h3>B (e.g., HTTPS)</h3>
+            <textarea id="pasteB" placeholder="Paste raw headers for B"></textarea>
+            <div class="row small">
+              <button id="analyzeB">Analyze B</button>
+              <button id="saveB">Save Snapshot B</button>
+            </div>
+          </div>
         </div>
 
-        <h2 style="margin-top:18px">Paste Response Headers (B)</h2>
-        <textarea id="pasteB" placeholder="Paste raw headers for HTTPS (or another response to compare)"></textarea>
-        <div class="row">
-          <button id="analyzeB">Analyze B</button>
-          <button id="saveB">Save Snapshot B</button>
-        </div>
-
-        <div class="row" style="margin-top:12px;">
+        <div class="row small">
           <button id="diffAB">Diff A ↔ B</button>
           <button id="compareCookies">Compare Cookies</button>
-          <select id="severityFilter"><option value="all">All severities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+          <button id="exportMD">Export PoC MD</button>
         </div>
 
+        <h3>Analysis</h3>
+        <div id="analysis" class="analysis">Paste headers and click Analyze.</div>
       </section>
 
       <aside class="panel right">
-        <h2>Findings & PoC</h2>
-        <div id="findings" class="findings">No analysis yet. Paste headers and click Analyze.</div>
+        <h2>3) Findings & PoC</h2>
+        <div id="findings" class="findings">No findings yet.</div>
 
-        <h3>PoC / Report Template</h3>
-        <div id="poc" class="poc">Generate a PoC by running tests or clicking a finding.</div>
+        <h3>PoC / Report</h3>
+        <pre id="poc" class="poc">Generate PoC from a finding or export after analysis.</pre>
 
         <h3>Snapshots</h3>
         <div class="snapshots">
-          <button id="listSnapshots">List Saved</button>
-          <div id="snapshotList"></div>
+          <button id="listSnaps">List</button>
+          <div id="snapList"></div>
         </div>
       </aside>
     </main>
 
     <footer>
-      <small>HeaderSleuth • All actions are client-side. Do not run generated commands against targets without permission.</small>
+      <small>HeaderSleuth++ — Phase 1. Always have permission before testing targets.</small>
     </footer>
   </div>
 
