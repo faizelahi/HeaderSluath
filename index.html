@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HeaderSleuth — HTTP Security Header & CORS Helper</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>HeaderSleuth</h1>
+      <p class="tagline">Generate safe header tests & parse pasted response headers. For bug-bounty reconnaissance — run tests locally.</p>
+    </header>
+
+    <section class="panel">
+      <h2>1) Generate curl tests (run locally)</h2>
+      <label>Target host (domain or IP): <input id="target" placeholder="example.com or https://example.com" /></label>
+      <div class="row">
+        <button id="genBasic">Generate Basic curl</button>
+        <button id="genCORS">Generate CORS test (Origin)</button>
+        <button id="genCookie">Generate Cookie test (Set-Cookie)</button>
+      </div>
+
+      <div>
+        <h3>Commands (copy & run in your terminal)</h3>
+        <pre id="curlOutput" class="output"></pre>
+      </div>
+      <p class="note">⚠️ These commands run from *your* machine — this page does not perform the requests. Use a lab or VPN where permitted.</p>
+    </section>
+
+    <section class="panel">
+      <h2>2) Paste response headers (from <code>curl -I</code> or browser DevTools)</h2>
+      <textarea id="pasteHeaders" placeholder="Paste raw response headers (one per line). Example: &#10;HTTP/1.1 200 OK&#10;Content-Security-Policy: default-src 'self'; ..."></textarea>
+      <div class="row">
+        <button id="analyze">Analyze Headers</button>
+        <button id="clear">Clear</button>
+      </div>
+
+      <div>
+        <h3>Analysis</h3>
+        <div id="analysis" class="analysis"></div>
+      </div>
+      <p class="note">Tip: run <code>curl -I -s -D - https://target/ -o /dev/null</code> to get headers, then paste here.</p>
+    </section>
+
+    <footer>
+      <small>HeaderSleuth • Safe-by-design. Does not fetch remote hosts. Designed for reconnaissance & learning (bug-bounty).</small>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
